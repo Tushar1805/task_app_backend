@@ -1,11 +1,14 @@
-const { createLogger, format, transports } = require("winston");
-const { combine, timestamp, label, printf } = format;
+import { createLogger, format, transports, Logger } from "winston";
 
+const { combine, timestamp, label, printf, colorize } = format;
+
+// Define log format
 const customFormat = printf(({ level, message, label, timestamp }) => {
-  return `${timestamp} :  ${level}: ${message}`;
+  return `${timestamp} : ${level}: ${message}`;
 });
 
-const logger = createLogger({
+// Create logger instance
+const logger: Logger = createLogger({
   level: "info",
   format: combine(
     label({ label: "API" }),
@@ -14,7 +17,7 @@ const logger = createLogger({
   ),
   transports: [
     new transports.Console({
-      format: format.combine(format.colorize(), customFormat),
+      format: combine(colorize(), customFormat),
     }),
     new transports.File({
       filename: "logs/error.log",
@@ -28,4 +31,4 @@ const logger = createLogger({
   ],
 });
 
-module.exports = logger;
+export default logger;
